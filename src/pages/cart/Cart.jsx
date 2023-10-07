@@ -83,12 +83,12 @@ function Cart() {
     }
 
     var options = {
-      key: "",
-      key_secret: "",
+      key: "rzp_test_GRz8CCjQ1f4yYu",
+      key_secret: "izGKSkg5La9z525MsxMHt1Fp",
       amount: parseInt(grandTotal * 100),
       currency: "INR",
       order_receipt: 'order_rcptid_' + name,
-      name: "E-Bharat",
+      name: "Abhishek Mall",
       description: "for testing purpose",
       handler: function (response) {
         console.log(response)
