@@ -5,18 +5,31 @@ import { toast } from 'react-toastify';
 import { fireDB } from '../../fireabase/FirebaseConfig';
 
 function myState(props) {
-    const [mode, setMode] = useState('light');
+
+    const [mode, setMode] = useState(() => {
+		const initialTheme = localStorage.getItem("theme");
+		return initialTheme ? initialTheme : "light";
+	});
 
     const toggleMode = () => {
-        if (mode === 'light') {
-            setMode('dark');
-            document.body.style.backgroundColor = "rgb(17, 24, 39)"
-        }
-        else {
-            setMode('light');
-            document.body.style.backgroundColor = "white"
-        }
+        // console.log(localStorage.getItem("mode"))
+        setMode((prevTheme) => {
+			const newTheme = prevTheme === "light" ? "dark" : "light";
+			localStorage.setItem("mode", newTheme);
+			return newTheme;
+		});
     }
+    function getThemeFromLocalStorage() {
+		const savedTheme = localStorage.getItem("mode");
+        toggleMode
+		if (savedTheme) {
+			setMode(savedTheme);
+            savedTheme==='dark'? document.body.style.backgroundColor = "rgb(17, 24, 39)" : document.body.style.backgroundColor = "white"
+		}
+	}
+    useEffect(() => {
+		getThemeFromLocalStorage();
+	}, [mode]);
 
     const [loading, setLoading] = useState(false);
 
@@ -93,6 +106,7 @@ function myState(props) {
     }
 
     useEffect(() => {
+        // toggleMode()
         getProductData();
     }, []);
 
@@ -141,14 +155,14 @@ function myState(props) {
     const getOrderData = async () => {
         setLoading(true)
         try {
-            const result = await getDocs(collection(fireDB, "order"))
+            const result = await getDocs(collection(fireDB, "orders"))
             const ordersArray = [];
             result.forEach((doc) => {
                 ordersArray.push(doc.data());
                 setLoading(false)
             });
             setOrder(ordersArray);
-            console.log(ordersArray)
+            // console.log(ordersArray)
             setLoading(false);
         } catch (error) {
             console.log(error)
@@ -168,7 +182,7 @@ function myState(props) {
                 setLoading(false)
             });
             setUser(usersArray);
-            console.log(usersArray)
+            // console.log(usersArray)
             setLoading(false);
         } catch (error) {
             console.log(error)

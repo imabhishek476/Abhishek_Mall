@@ -16,6 +16,10 @@ function Login() {
     const navigate = useNavigate();
 
     const login = async () => {
+        if (email === "" || password === "") {
+            return toast.error("All fields are required")
+            
+        }
         setLoading(true)
         try {
             const result = await signInWithEmailAndPassword(auth,email,password);
@@ -35,6 +39,7 @@ function Login() {
             
         } catch (error) {
             console.log(error)
+            toast.error(error.message.replace("Firebase:",""))
             setLoading(loading)
         }
 

@@ -17,12 +17,15 @@ function Cart() {
   const dispatch = useDispatch()
 
   const cartItems = useSelector((state) => state.cart);
-  console.log(cartItems)
+  // console.log(cartItems)
 
   const deleteCart = (item) => {
     dispatch(deleteFromCart(item));
     toast.success("Delete cart")
   }
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -36,10 +39,10 @@ function Cart() {
       temp = temp + parseInt(cartItem.price)
     })
     setTotalAmount(temp);
-    console.log(temp)
+    // console.log(temp)
   }, [cartItems])
 
-  const shipping = parseInt(100);
+  const shipping = (totalAmout && totalAmout < 300 ?parseInt(100) : parseInt(0));
 
   const grandTotal = shipping + totalAmout;
   // console.log(grandTotal)
@@ -91,7 +94,7 @@ function Cart() {
       name: "Abhishek Mall",
       description: "for testing purpose",
       handler: function (response) {
-        console.log(response)
+        // console.log(response)
         toast.success('Payment Successful')
 
         const paymentId = response.razorpay_payment_id;
@@ -129,7 +132,7 @@ function Cart() {
 
     var pay = new window.Razorpay(options);
     pay.open();
-    console.log(pay)
+    // console.log(pay)
 
 
   }
@@ -164,13 +167,19 @@ function Cart() {
           </div>
 
           <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3" style={{ backgroundColor: mode === 'dark' ? 'rgb(32 33 34)' : '', color: mode === 'dark' ? 'white' : '', }}>
+          {totalAmout<300?
+            <div className="flex justify-between">
+              <p className="font-bold text-red-700" style={{ color: mode === 'dark' ? 'white' : '' }}>Order above ₹300 to get free delivery</p>
+            </div>
+            :""
+            }
             <div className="mb-2 flex justify-between">
               <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}>Subtotal</p>
               <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}>₹{totalAmout}</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}>Shipping</p>
-              <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}>₹{shipping}</p>
+              <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}>Delivery Cost</p>
+              <p className="text-gray-700" style={{ color: mode === 'dark' ? 'white' : '' }}> {totalAmout<300?`₹${shipping}`:"Free"}</p>
             </div>
             <hr className="my-4" />
             <div className="flex justify-between mb-3">
@@ -180,17 +189,23 @@ function Cart() {
               </div>
             </div>
             {/* <Modal  /> */}
-            <Modal
-              name={name}
-              address={address}
-              pincode={pincode}
-              phoneNumber={phoneNumber}
-              setName={setName}
-              setAddress={setAddress}
-              setPincode={setPincode}
-              setPhoneNumber={setPhoneNumber}
-              buyNow={buyNow}
-            />
+            {grandTotal?   <Modal
+                name={name}
+                address={address}
+                pincode={pincode}
+                phoneNumber={phoneNumber}
+                setName={setName}
+                setAddress={setAddress}
+                setPincode={setPincode}
+                setPhoneNumber={setPhoneNumber}
+                buyNow={buyNow}
+              /> :
+                <button
+                    type="button"
+                    className="w-full  bg-violet-600 py-2 text-center rounded-lg text-white font-bold "
+                >
+                    Buy Now
+                </button>}
           </div>
         </div>
       </div>
