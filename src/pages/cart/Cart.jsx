@@ -117,7 +117,7 @@ function Cart() {
 
         try {
 
-          const orderRef = collection(fireDB, 'order');
+          const orderRef = collection(fireDB, 'orders');
           addDoc(orderRef, orderInfo);
 
         } catch (error) {
